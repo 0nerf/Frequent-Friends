@@ -4,7 +4,9 @@ Brings back Discord's removed "Frequently Contacted" list directly to your DM si
 
 ## Preview
 
-<!-- Add your screenshots here -->
+<img width="593" height="669" alt="frequentfriendsscreenshot" src="https://github.com/user-attachments/assets/7471cf02-9635-480c-8255-abb7d87f1e62" /> <img width="590" height="674" alt="frequentscreenshot" src="https://github.com/user-attachments/assets/0ca41b75-392f-4d23-9725-8195934b212a" />
+
+
 
 ## Features
 
