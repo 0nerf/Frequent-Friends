@@ -1,9 +1,3 @@
-/*
- * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import { DataStore } from "@api/index";
 import { findByPropsLazy } from "@webpack";
 import {
@@ -31,8 +25,6 @@ const UserAffinitiesStore = findByPropsLazy("getUserAffinities");
 export let frequencyCache: Record<string, FrequencyData> = Object.create(null);
 export let lastBackup: Record<string, FrequencyData> | null = null;
 let voiceScoreInterval: ReturnType<typeof setInterval> | null = null;
-// Global lock to prevent a race between _initVoiceState and onVoiceStateUpdate
-// both calling startVoiceScoring() before the first interval is fully registered.
 let voiceScoringActive = false;
 export let currentVoiceChannelId: string | null = null;
 let saveDebounce: ReturnType<typeof setTimeout> | null = null;
@@ -186,9 +178,7 @@ export function getRankedFriendIds(): string[] {
 }
 
 export function startVoiceScoring() {
-    // Prevent double-interval: if a race between _initVoiceState and
-    // onVoiceStateUpdate causes two startVoiceScoring() calls before the
-    // first setInterval is registered, the lock blocks the second one.
+
     if (voiceScoringActive) {
         stopVoiceScoring();
     }
