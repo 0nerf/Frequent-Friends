@@ -1,9 +1,3 @@
-/*
- * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 export const STORE_KEY_PREFIX = "FrequentFriends_";
 export const HALF_LIFE_MS = 7 * 86400000;
 export const DM_POINTS = 1.0;
