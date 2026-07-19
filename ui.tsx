@@ -1,9 +1,3 @@
-/*
- * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import { findByPropsLazy } from "@webpack";
 import {
     Avatar,
@@ -52,8 +46,7 @@ function UserAvatar({ userId, isFirst, isLast }: {
 
     const name = user.globalName ?? user.username ?? "Unknown";
 
-    // Memoize the decoration URL so repeated renders (hover, presence changes)
-    // don't allocate a new string on every call — noticeable with many avatars.
+
     const avatarDecorationUrl = useMemo(() => {
         const asset = user.avatarDecorationData?.asset;
         if (!asset) return undefined;
@@ -141,8 +134,7 @@ export function FrequentFriendsWidget() {
     const [tick, setTick] = useState(0);
     const { showOffline, maxFriends, customLabel } = settings.use(["showOffline", "maxFriends", "customLabel", "ignoreAffinities"]);
 
-    // SLIDER may return a float on some Vencord builds even with stickToMarkers.
-    // Round defensively so slice/comparison logic always gets a whole number.
+
     const maxFriendsInt = Math.round(maxFriends);
 
     useEffect(() => {
@@ -184,8 +176,6 @@ export function FrequentFriendsWidget() {
         }
     }
 
-    // Label length is capped by settings.maxLength: 30.
-    // Truncation is handled via CSS text-overflow:ellipsis (see style.css).
     const label = customLabel || "Frequent Friends";
 
     return (
