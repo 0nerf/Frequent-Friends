@@ -1,9 +1,3 @@
-/*
- * Vencord, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import ErrorBoundary from "@components/ErrorBoundary";
 import definePlugin from "@utils/types";
 import { React } from "@webpack/common";
@@ -33,7 +27,6 @@ import { getForceUpdateWidget, isPluginEnabled, setIsEnabled } from "./state";
 import { FrequentFriendsWidget } from "./ui";
 import "./style.css";
 
-// Wire up settings callbacks to scoring module (avoids circular dependency)
 pluginCallbacks.getFrequencyCache = () => frequencyCache;
 pluginCallbacks.setFrequencyCache = cache => setFrequencyCache(cache);
 pluginCallbacks.getLastBackup = () => lastBackup;
@@ -80,8 +73,6 @@ function onVoiceStateUpdate(e: FluxVoiceStateEvent) {
     }
 }
 
-// syncTimeout is kept at module scope so stop() can cancel it and prevent
-// a stale account's affinity data from being written into the new account's store.
 let syncTimeout: ReturnType<typeof setTimeout> | null = null;
 
 async function onCurrentUserUpdate() {
@@ -93,8 +84,7 @@ async function onCurrentUserUpdate() {
     stopVoiceScoring();
     setCurrentVoiceChannelId(null);
     await loadData();
-    // Discord stores take some time to flush old data and load new data on account switch.
-    // Delaying the affinity sync prevents cross-account data pollution.
+
     syncTimeout = setTimeout(() => {
         syncTimeout = null;
         if (isPluginEnabled()) syncWithAffinities();
@@ -112,9 +102,7 @@ export default definePlugin({
             find: '"dm-quick-launcher"===',
             replacement: [
                 {
-                    // Guard against double-wrapping on plugin restart:
-                    // if the function is already our wrapper (_ffWrapped flag),
-                    // return it as-is instead of wrapping again.
+                    
                     match: /(renderSection:)([^,}]+)/,
                     replace: "$1 (this._ffRenderSection ??= $self.hookRenderSection(this, $2))"
                 }
@@ -123,8 +111,7 @@ export default definePlugin({
     ],
 
     hookRenderSection(instance: any, originalRenderSection: Function) {
-        // Bail out early if this instance was already patched — prevents double-wrap
-        // when the plugin is stopped and restarted without a full client reload.
+        
         if (typeof originalRenderSection === "function" && (originalRenderSection as any)._ffWrapped) {
             return originalRenderSection;
         }
@@ -144,7 +131,6 @@ export default definePlugin({
             return originalResult;
         };
 
-        // Mark so we can detect re-wrapping on restart
         Object.defineProperty(wrapped, "_ffWrapped", { value: true, writable: false });
         return wrapped;
     },
@@ -175,7 +161,7 @@ export default definePlugin({
         getForceUpdateWidget()?.();
         stopVoiceScoring();
         setCurrentVoiceChannelId(null);
-        // Cancel any pending affinity sync to prevent writing stale account data
+    
         if (syncTimeout) {
             clearTimeout(syncTimeout);
             syncTimeout = null;
